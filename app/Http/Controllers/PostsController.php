@@ -44,13 +44,19 @@ class PostsController extends Controller
     {
         $post = Post::findOrFail($postId);
         $post->likes()->save(new Like());
-        return response()->json(['success' => true]);
+        return response()->json([
+            'postId' => $postId,
+            'count' => $post->likes()->count(),
+        ]);
     }
 
     public function likeComment(Request $request, $commentId)
     {
         $comment = Comment::findOrFail($commentId);
         $comment->likes()->save(new Like());
-        return response()->json(['success' => true]);
+        return response()->json([
+            'commentId' => $commentId,
+            'count' => $comment->likes()->count(),
+        ]);
     }
 }

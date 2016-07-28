@@ -32,14 +32,14 @@
         <div class="row">
             <h3>{{ $post->subject }}</h3>
             <p>
-                {{ $post->body }} ({{ $post->likes()->count() }})
+                {{ $post->body }} (<span class="post-likes-{{ $post->id }}">{{ $post->likes()->count() }}</span>)
                 <a href="#" class="btn btn-success glyphicon glyphicon-thumbs-up" name="like-post" data-post-id="{{ $post->id }}"></a>
             </p>
             <p>
             <h3>Comments</h3>
             @foreach ($post->comments as $comment)
                 <div class="row">
-                    {{ $comment->body }} ({{ $comment->likes()->count() }})
+                    {{ $comment->body }} (<span class="comment-likes-{{ $comment->id }}">{{ $comment->likes()->count() }}</span>)
                     <a href="#" class="btn btn-success glyphicon glyphicon-thumbs-up" name="like-comment" data-comment-id="{{ $comment->id }}"></a>
                 </div>
             @endforeach
@@ -64,7 +64,10 @@
             }
             $.ajax('{{ route('posts.like') }}/' + post, {
                 method: 'POST',
-                data: data
+                data: data,
+                success: function(response){
+                    updatePostCount(response.postId, response.count);
+                }
             });
         });
         $('[name="like-comment"]').on('click', function (event) {
@@ -74,9 +77,20 @@
             }
             $.ajax('{{ route('posts.comment.like') }}/' + comment, {
                 method: 'POST',
-                data: data
+                data: data,
+                success: function(response){
+                updateCommentCount(response.commentId, response.count);
+            }
             });
         });
     });
+    function updatePostCount(postId, count)
+    {
+        $('.post-likes-'+postId).html(count);
+    }
+    function updateCommentCount(commentId, count)
+    {
+        $('.comment-likes-'+commentId).html(count);
+    }
 </script>
 </html>
