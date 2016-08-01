@@ -13,7 +13,8 @@ class PostsController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::get();
+        dd($posts);
         return view('posts.index')
             ->with('posts', $posts);
     }
